@@ -2,6 +2,7 @@ import os
 import sys
 import pygame as pg
 import random
+import time
 
 WIDTH, HEIGHT = 1100, 650
 DELTA={pg.K_UP:(0,-5),
@@ -11,6 +12,7 @@ DELTA={pg.K_UP:(0,-5),
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
 def check_bound(rect:pg.Rect) -> tuple[bool,bool]:
     yoko,tate = True,True
     if rect.left<0 or WIDTH < rect.right:
@@ -18,6 +20,39 @@ def check_bound(rect:pg.Rect) -> tuple[bool,bool]:
     if rect.top<0 or HEIGHT < rect.bottom:
         tate = False
     return yoko,tate
+
+
+def gameover(screen: pg.Surface) -> None:
+    black_img =pg.Surface((WIDTH, HEIGHT))
+    black_img.set_alpha(180)
+   
+    fonto = pg.font.Font(None,80)
+    txt = fonto.render("Game Over",True, (255,255,255))
+    black_img.blit(txt,[WIDTH/2-130,HEIGHT/2])
+
+
+    cry_img = pg.image.load("fig/8.png") 
+    black_img.blit(cry_img,[WIDTH/2-200, HEIGHT/2])
+    black_img.blit(cry_img,[WIDTH/2+200, HEIGHT/2])
+
+    screen.blit(black_img,[0,0])
+
+    pg.display.update()
+    time.sleep(5)
+  
+    
+
+
+# def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+#     for r in range(1,11):
+#         bb_img = pg.Surface((20*r,20*r))
+#         pg.draw.circle(bb_img,(255,0,0),(10*r,10*r),10*r)
+#         bb_imgs.append(bb_img)
+#         bb_accs = [a for a in range(1,11)]
+#         return bb_imgs,bb_accs
+
+    
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -42,8 +77,8 @@ def main():
         screen.blit(bg_img, [0, 0]) 
 
         if kk_rct.colliderect(bb_rct): #kkとｂｂのレクとが重なったら
+            gameover(screen)
             print("game over")
-            
             return
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
