@@ -41,6 +41,10 @@ def main():
                 return
         screen.blit(bg_img, [0, 0]) 
 
+        if kk_rct.colliderect(bb_rct): #kkとｂｂのレクとが重なったら
+            print("game over")
+            
+            return
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
         # if key_lst[pg.K_UP]:
@@ -65,6 +69,7 @@ def main():
             vx *=-1
         if not tate:
             vy *=-1
+        
         screen.blit(bb_img,bb_rct) #爆弾表示
         pg.display.update()
         tmr += 1
