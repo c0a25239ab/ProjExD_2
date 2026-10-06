@@ -3,6 +3,7 @@ import sys
 import pygame as pg
 import random
 import time
+import math
 
 WIDTH, HEIGHT = 1100, 650
 DELTA={pg.K_UP:(0,-5),
@@ -29,8 +30,6 @@ def gameover(screen: pg.Surface) -> None:
     fonto = pg.font.Font(None,80)
     txt = fonto.render("Game Over",True, (255,255,255))
     black_img.blit(txt,[WIDTH/2-130,HEIGHT/2])
-
-
     cry_img = pg.image.load("fig/8.png") 
     black_img.blit(cry_img,[WIDTH/2-200, HEIGHT/2])
     black_img.blit(cry_img,[WIDTH/2+200, HEIGHT/2])
@@ -39,26 +38,35 @@ def gameover(screen: pg.Surface) -> None:
 
     pg.display.update()
     time.sleep(5)
+
+def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
+    """
+    移動量タプルと回転・反転したこうかとんSurfaceの対応辞書を作成する関数（追加機能3）
+    戻り値：{(dx, dy): 画像Surface} の辞書
+    """
+    kk_img = pg.image.load("fig/3.png")
+    kk_flip = pg.transform.flip(kk_img, True, False)
+
+    return {
+        (0, 0): pg.transform.rotozoom(kk_img, 0, 0.9),
+        (-5, 0): pg.transform.rotozoom(kk_img, 0, 0.9),
+        (-5, -5): pg.transform.rotozoom(kk_img, -45, 0.9),
+        (0, -5): pg.transform.rotozoom(kk_flip, 90, 0.9),
+        (+5, -5): pg.transform.rotozoom(kk_flip, 45, 0.9),
+        (+5, 0): pg.transform.rotozoom(kk_flip, 0, 0.9),
+        (+5, +5): pg.transform.rotozoom(kk_flip, -45, 0.9),
+        (0, +5): pg.transform.rotozoom(kk_flip, -90, 0.9),
+        (-5, +5): pg.transform.rotozoom(kk_img, 45, 0.9),
+    }
+
+
   
-    
-
-
-# def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
-#     for r in range(1,11):
-#         bb_img = pg.Surface((20*r,20*r))
-#         pg.draw.circle(bb_img,(255,0,0),(10*r,10*r),10*r)
-#         bb_imgs.append(bb_img)
-#         bb_accs = [a for a in range(1,11)]
-#         return bb_imgs,bb_accs
-
-    
-
-
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
+    kk_imgs = get_kk_imgs()
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
     bb_img =pg.Surface((20,20))#空のsurface
@@ -70,6 +78,7 @@ def main():
     vx,vy=+5,+5
     clock = pg.time.Clock()
     tmr = 0
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -109,6 +118,7 @@ def main():
         pg.display.update()
         tmr += 1
         clock.tick(50)
+        
 
 
 if __name__ == "__main__":
