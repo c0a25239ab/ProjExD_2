@@ -54,6 +54,7 @@ def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
     移動量タプルと回転・反転したこうかとんSurfaceの対応辞書を作成する関数
     戻り値：{(dx, dy): 画像Surface} の辞書
     """
+    
     kk_img = pg.image.load("fig/3.png")
     kk_flip = pg.transform.flip(kk_img, True, False)
 
