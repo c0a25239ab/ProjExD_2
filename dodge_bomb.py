@@ -11,6 +11,13 @@ DELTA={pg.K_UP:(0,-5),
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def check_bound(rect:pg.Rect) -> tuple[bool,bool]:
+    yoko,tate = True,True
+    if rect.left<0 or WIDTH < rect.right:
+        yoko = False
+    if rect.top<0 or HEIGHT < rect.bottom:
+        tate = False
+    return yoko,tate
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -49,9 +56,16 @@ def main():
                 sum_mv[0]+=tpl[0] #横方向移動
                 sum_mv[1]+=tpl[1] #縦移動方向
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct)!=(True,True):#どこかしらはみ出てる
+            kk_rct.move_ip(-sum_mv[0],-sum_mv[1])#先ほどの操作をキャンセル
         screen.blit(kk_img, kk_rct)
-        bb_rct.move_ip(vx,vy)
-        screen.blit(bb_img,bb_rct) 
+        bb_rct.move_ip(vx,vy)#爆弾動く
+        yoko,tate = check_bound(bb_rct)
+        if not yoko:
+            vx *=-1
+        if not tate:
+            vy *=-1
+        screen.blit(bb_img,bb_rct) #爆弾表示
         pg.display.update()
         tmr += 1
         clock.tick(50)
